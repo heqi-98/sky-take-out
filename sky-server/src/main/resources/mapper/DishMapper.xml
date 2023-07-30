@@ -16,6 +16,7 @@
             (#{dishFlavor.dishId}, #{dishFlavor.name}, #{dishFlavor.value})
         </foreach>
     </insert>
+
     <select id="pageQuery" resultType="com.sky.vo.DishVO">
         select d.*, c.name categoryName from dish d left join category c on d.category_id = c.id
         <where>
