@@ -39,6 +39,8 @@ public class AutoFillAspect {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         //获得方法上的注解
         AutoFill autoFill = signature.getMethod().getAnnotation(AutoFill.class);
+
+
         // 获得注解中的操作类
         OperationType operationType = autoFill.value();
         // 获取当前目标方法的参数
