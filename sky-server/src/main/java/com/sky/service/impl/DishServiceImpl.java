@@ -18,6 +18,7 @@ import com.sky.vo.DishVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -48,7 +49,7 @@ public class DishServiceImpl implements DishService {
                 dishFlavor.setDishId(dishId);
             });
             //批量插入
-            dishMapper.insertBatch(flavors);
+            dishFlavorMapper.insertBatch(flavors);
         }
     }
 
@@ -86,5 +87,39 @@ public class DishServiceImpl implements DishService {
             dishFlavorMapper.deleteByDishId(id);
         });
 
+    }
+
+    /**
+     * 根据id查询菜品信息和口味
+     * @param id
+     * @return
+     */
+    public DishVO getByIdWithFlavor(Long id) {
+        Dish dish = dishMapper.getById(id);
+        List<DishFlavor> flavors = dishFlavorMapper.getByDishId(id);
+        DishVO dishVO = new DishVO();
+        BeanUtils.copyProperties(dish, dishVO);
+        dishVO.setFlavors(flavors);
+        return dishVO;
+    }
+
+    /**
+     * 根据id修改菜品和关联的口味
+     * @param dishDTO
+     */
+    @Transactional
+    public void updateWithFlavor(DishDTO dishDTO) {
+        Dish dish = new Dish();
+        BeanUtils.copyProperties(dishDTO, dish);
+        dishMapper.update(dish);
+        //删除原有的口味
+        dishFlavorMapper.deleteByDishId(dishDTO.getId());
+
+        //添加新的口味
+        List<DishFlavor> flavors = dishDTO.getFlavors();
+        flavors.forEach(dishFlavor -> {
+            dishFlavor.setDishId(dishDTO.getId());
+        });
+        dishFlavorMapper.insertBatch(flavors);
     }
 }

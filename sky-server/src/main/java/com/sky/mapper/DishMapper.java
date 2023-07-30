@@ -47,11 +47,6 @@ public interface DishMapper {
     @AutoFill(OperationType.INSERT)
     void insert(Dish dish);
 
-    /**
-     * 批量插入口味数据
-     * @param flavors
-     */
-    void insertBatch(List<DishFlavor> flavors);
 
     /**
      * 菜品分页查询
@@ -59,4 +54,11 @@ public interface DishMapper {
      * @return
      */
     Page<DishVO> pageQuery(DishPageQueryDTO dishPageQueryDTO);
+
+    /**
+     * 修改菜品信息
+     * @param dish
+     */
+    @AutoFill(OperationType.UPDATE)
+    void update(Dish dish);
 }
